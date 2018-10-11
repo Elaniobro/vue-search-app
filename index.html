@@ -457,7 +457,7 @@
                             this.required.searchTerm = !isSearchValid;
                         },
                         validateStars: function() { // validates stars input field
-                            if(!this.stars){
+                            if((this.stars == null) || (this.stars == "")) {
                                 console.log('empty');
                                 return;
                             }
