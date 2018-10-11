@@ -308,7 +308,7 @@
                   method="post"
                   class="ef--form__container">
                 <div class="ef--input__container">
-                    <label class="ef--input__label ef--input__label-text">Text
+                    <label class="ef--input__label ef--input__label-text">Text<span class="error" v-if="required.searchTerm"> *A valid search term is required</span>
                         <input
                             id="searchTerm"
                             v-model="searchTerm"
@@ -426,6 +426,9 @@
                             searchTerm: false,
                             stars: false
                         },
+                        required: {
+                            searchTerm: false
+                        },
                         searchTerm: null,
                         stars: null,
                         licenseType: null,
@@ -451,9 +454,15 @@
                         validateSearch: function() { // validates search input field
                             const isSearchValid = isValidSearch(this.searchTerm);
                             this.errors.searchTerm =  !isSearchValid;
+                            this.required.searchTerm = !isSearchValid;
                         },
                         validateStars: function() { // validates stars input field
+                            if(!this.stars){
+                                console.log('empty');
+                                return;
+                            }
                             const isStarsValid = isValidStars(this.stars);
+
                             this.errors.stars = isStarsValid;
                         },
                         buildApiURL: function (query, stars, license, forked) { // builds the api call
@@ -474,7 +483,11 @@
                             // const isStarsValid = isValidStars(this.stars);
                             // this.errors.stars = isStarsValid;
 
-                             if(isSearchValid && (this.errors.stars!= true)) {
+                            if (!isSearchValid) {
+                                this.required.searchTerm = true;
+                            }
+
+                            if(isSearchValid && (this.errors.stars!= true)) {
                                 this.isLoading = true;
                                 // async/await/promise chain
                                 axios.get(this.buildApiURL(this.searchTerm, this.stars, this.forked, this.licenseType))
